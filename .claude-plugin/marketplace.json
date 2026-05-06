@@ -9,11 +9,12 @@
   "plugins": [
     {
       "name": "rtfm",
-      "source": "./rtfm",
-      "description": "The open retrieval layer for AI agents. Indexes code, docs, legal, research, data with FTS5 + optional embeddings. Serves surgical context via MCP.",
+      "source": {
+        "source": "github",
+        "repo": "roomi-fields/rtfm"
+      },
+      "description": "The open retrieval layer for AI agents. Indexes code, docs, legal, research, data with FTS5 + optional embeddings. Serves surgical context via MCP. Pure-Python plugin — no pip install required.",
       "homepage": "https://roomi-fields.github.io/rtfm/",
-      "repository": "https://github.com/roomi-fields/rtfm",
-      "license": "MIT",
       "category": "retrieval",
       "keywords": [
         "retrieval",
@@ -33,8 +34,6 @@
       "source": "./notebooklm",
       "description": "Automate Google NotebookLM at scale. Citation-backed Q&A, full Studio generation (audio, video, infographic, report), multi-account rotation. Pairs with RTFM for offline retrieval.",
       "homepage": "https://github.com/roomi-fields/notebooklm-mcp",
-      "repository": "https://github.com/roomi-fields/notebooklm-mcp",
-      "license": "MIT",
       "category": "research",
       "keywords": [
         "notebooklm",

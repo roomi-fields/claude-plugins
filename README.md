@@ -20,7 +20,7 @@
 /plugin install notebooklm@roomi-fields
 ```
 
-That's it. The MCP servers register automatically when each plugin is enabled.
+That's it. Both MCP servers register automatically when each plugin is enabled.
 
 ---
 
@@ -31,14 +31,12 @@ That's it. The MCP servers register automatically when each plugin is enabled.
 | | |
 |---|---|
 | **What** | Indexes your projects (code, docs, legal, research, data) and serves surgical context via MCP |
-| **Why** | Augment-style code search, but open source, multi-domain, and extensible. Drop-in for any Claude Code project |
+| **Why** | Augment-style code search, but open source, multi-domain, and extensible |
 | **Tools** | `rtfm_search`, `rtfm_expand`, `rtfm_context`, `rtfm_discover`, `rtfm_books`, `rtfm_graph`, `rtfm_sync` |
-| **Repo** | [`roomi-fields/rtfm`](https://github.com/roomi-fields/rtfm) |
+| **Source** | Pulled from [`roomi-fields/rtfm`](https://github.com/roomi-fields/rtfm) — pure-Python, no pip install required |
 | **Docs** | [roomi-fields.github.io/rtfm](https://roomi-fields.github.io/rtfm/) |
-| **PyPI** | [`rtfm-ai`](https://pypi.org/project/rtfm-ai/) |
-| **Prerequisite** | `pip install rtfm-ai` (or `pipx install rtfm-ai`) before enabling the plugin |
 
-See the [plugin's own README](./rtfm/README.md) for setup details.
+> RTFM is also available as a standalone marketplace: `/plugin marketplace add roomi-fields/rtfm`. This aggregator marketplace lets you install both plugins in one go.
 
 ### `notebooklm` — Google NotebookLM automation
 
@@ -47,11 +45,11 @@ See the [plugin's own README](./rtfm/README.md) for setup details.
 | **What** | Citation-backed Q&A from your NotebookLM notebooks, plus full Studio generation (audio, video, infographic, report, presentation, data table) |
 | **Why** | Zero hallucinations from your sources. Multi-account rotation with auto-reauth for batch workloads |
 | **Tools** | Q&A with 5 citation formats, source management, notebook library, content download |
+| **Source** | This marketplace ships a thin wrapper that runs `npx -y @roomi-fields/notebooklm-mcp` |
 | **Repo** | [`roomi-fields/notebooklm-mcp`](https://github.com/roomi-fields/notebooklm-mcp) |
-| **npm** | [`@roomi-fields/notebooklm-mcp`](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) |
-| **Prerequisite** | Node.js ≥ 18 (the plugin runs via `npx` — no manual install needed) |
+| **Prerequisite** | Node.js ≥ 18 (npx auto-downloads the package on first use) |
 
-See the [plugin's own README](./notebooklm/README.md) for setup details.
+See [`notebooklm/README.md`](./notebooklm/README.md) for setup details.
 
 ---
 
@@ -72,9 +70,9 @@ See the [RTFM × NotebookLM integration guide](https://roomi-fields.github.io/rt
 ## Why a marketplace?
 
 - **One-line install** for users (`/plugin marketplace add ...`)
-- **Discoverability** in `/plugin Discover` tab
-- **Consistent versioning** (each plugin pinned to its release)
-- **Backed by working open-source projects** — both tools are battle-tested in production (RTFM benchmarked on FeatureBench, NotebookLM tested on 1000+ overnight questions)
+- **Discoverability** in Claude Code's `/plugin` Discover tab
+- **Aggregator pattern** — `rtfm` is sourced from its own repo (single source of truth for its version), `notebooklm` ships as a thin wrapper here
+- **Backed by working open-source projects** — RTFM benchmarked on FeatureBench, NotebookLM tested on 1000+ overnight questions
 
 ---
 
@@ -83,18 +81,23 @@ See the [RTFM × NotebookLM integration guide](https://roomi-fields.github.io/rt
 ```
 claude-plugins/
 ├── .claude-plugin/marketplace.json   # the catalog
-├── rtfm/
-│   ├── .claude-plugin/plugin.json    # plugin manifest
-│   ├── .mcp.json                     # MCP server definition
-│   └── README.md
-├── notebooklm/
+├── notebooklm/                        # thin wrapper around @roomi-fields/notebooklm-mcp
 │   ├── .claude-plugin/plugin.json
 │   ├── .mcp.json
 │   └── README.md
-└── README.md   (this file)
+├── README.md   (this file)
+└── LICENSE
+
+# rtfm is sourced from github.com/roomi-fields/rtfm directly,
+# so no rtfm/ subdirectory lives here.
 ```
 
-The plugins are *thin wrappers*: their `.mcp.json` launches the upstream binary (`rtfm-serve` from PyPI, `npx @roomi-fields/notebooklm-mcp` from npm). All the heavy lifting lives in the source repos linked above.
+---
+
+## Versioning
+
+- **`rtfm`** — version is read from [`roomi-fields/rtfm/.claude-plugin/plugin.json`](https://github.com/roomi-fields/rtfm/blob/main/.claude-plugin/plugin.json). Updates ship when that file is bumped. The marketplace entry is intentionally version-less to avoid drift between the two manifests.
+- **`notebooklm`** — version pinned in this repo's [`notebooklm/.claude-plugin/plugin.json`](./notebooklm/.claude-plugin/plugin.json). Bump it when [`@roomi-fields/notebooklm-mcp`](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) ships a new version.
 
 ---
 
