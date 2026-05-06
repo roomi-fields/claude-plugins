@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rtfm": {
+      "command": "rtfm-serve",
+      "args": []
+    }
+  }
+}

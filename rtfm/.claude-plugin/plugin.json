@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "rtfm",
+  "version": "0.7.0",
+  "description": "The open retrieval layer for AI agents. Indexes any project (code, docs, legal, research, data) and serves surgical context via MCP.",
+  "author": {
+    "name": "roomi-fields"
+  },
+  "homepage": "https://roomi-fields.github.io/rtfm/",
+  "repository": "https://github.com/roomi-fields/rtfm",
+  "license": "MIT",
+  "keywords": [
+    "retrieval",
+    "context",
+    "search",
+    "indexing",
+    "fts5",
+    "sqlite",
+    "embeddings",
+    "knowledge-base",
+    "extensible"
+  ]
+}
