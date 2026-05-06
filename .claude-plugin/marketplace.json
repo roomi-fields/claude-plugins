@@ -10,8 +10,8 @@
     {
       "name": "rtfm",
       "source": {
-        "source": "github",
-        "repo": "roomi-fields/rtfm"
+        "source": "url",
+        "url": "https://github.com/roomi-fields/rtfm.git"
       },
       "description": "The open retrieval layer for AI agents. Indexes code, docs, legal, research, data with FTS5 + optional embeddings. Serves surgical context via MCP. Pure-Python plugin — no pip install required.",
       "homepage": "https://roomi-fields.github.io/rtfm/",
@@ -32,8 +32,8 @@
     {
       "name": "notebooklm",
       "source": {
-        "source": "github",
-        "repo": "roomi-fields/notebooklm-mcp"
+        "source": "url",
+        "url": "https://github.com/roomi-fields/notebooklm-mcp.git"
       },
       "description": "Automate Google NotebookLM at scale. Citation-backed Q&A, full Studio generation (audio, video, infographic, report, presentation, data table), multi-account rotation with auto-reauth, and batch_to_vault for offline RTFM-ingestable answer caching.",
       "homepage": "https://github.com/roomi-fields/notebooklm-mcp",
