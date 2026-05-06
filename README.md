@@ -36,8 +36,6 @@ That's it. Both MCP servers register automatically when each plugin is enabled.
 | **Source** | Pulled from [`roomi-fields/rtfm`](https://github.com/roomi-fields/rtfm) — pure-Python, no pip install required |
 | **Docs** | [roomi-fields.github.io/rtfm](https://roomi-fields.github.io/rtfm/) |
 
-> RTFM is also available as a standalone marketplace: `/plugin marketplace add roomi-fields/rtfm`. This aggregator marketplace lets you install both plugins in one go.
-
 ### `notebooklm` — Google NotebookLM automation
 
 | | |
