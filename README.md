@@ -40,14 +40,13 @@ That's it. Both MCP servers register automatically when each plugin is enabled.
 
 | | |
 |---|---|
+| | |
+|---|---|
 | **What** | Citation-backed Q&A from your NotebookLM notebooks, plus full Studio generation (audio, video, infographic, report, presentation, data table) |
 | **Why** | Zero hallucinations from your sources. Multi-account rotation with auto-reauth for batch workloads |
 | **Tools** | Q&A with 5 citation formats, source management, notebook library, content download |
-| **Source** | This marketplace ships a thin wrapper that runs `npx -y @roomi-fields/notebooklm-mcp` |
-| **Repo** | [`roomi-fields/notebooklm-mcp`](https://github.com/roomi-fields/notebooklm-mcp) |
-| **Prerequisite** | Node.js ≥ 18 (npx auto-downloads the package on first use) |
-
-See [`notebooklm/README.md`](./notebooklm/README.md) for setup details.
+| **Source** | Pulled from [`roomi-fields/notebooklm-mcp`](https://github.com/roomi-fields/notebooklm-mcp) — `mcpServers` declared in upstream `.claude-plugin/plugin.json` |
+| **Prerequisite** | Node.js ≥ 18 (the upstream manifest runs `npx -y @roomi-fields/notebooklm-mcp` — auto-download on first use) |
 
 ---
 
@@ -69,7 +68,7 @@ See the [RTFM × NotebookLM integration guide](https://roomi-fields.github.io/rt
 
 - **One-line install** for users (`/plugin marketplace add ...`)
 - **Discoverability** in Claude Code's `/plugin` Discover tab
-- **Aggregator pattern** — `rtfm` is sourced from its own repo (single source of truth for its version), `notebooklm` ships as a thin wrapper here
+- **Pure aggregator** — both plugins are sourced directly from their own repos via `source: github`. No code, no wrapper, no duplicated metadata. Each upstream `plugin.json` is the single source of truth for its version and configuration
 - **Backed by working open-source projects** — RTFM benchmarked on FeatureBench, NotebookLM tested on 1000+ overnight questions
 
 ---
@@ -78,24 +77,35 @@ See the [RTFM × NotebookLM integration guide](https://roomi-fields.github.io/rt
 
 ```
 claude-plugins/
-├── .claude-plugin/marketplace.json   # the catalog
-├── notebooklm/                        # thin wrapper around @roomi-fields/notebooklm-mcp
-│   ├── .claude-plugin/plugin.json
-│   ├── .mcp.json
-│   └── README.md
-├── README.md   (this file)
+├── .claude-plugin/marketplace.json   # the catalog (only file that matters)
+├── README.md
 └── LICENSE
-
-# rtfm is sourced from github.com/roomi-fields/rtfm directly,
-# so no rtfm/ subdirectory lives here.
 ```
+
+That's the whole repo. No plugin code lives here — both `rtfm` and `notebooklm` are sourced from their own GitHub repos at install time. This keeps the aggregator dependency-free and ensures users always get the upstream manifest.
 
 ---
 
 ## Versioning
 
-- **`rtfm`** — version is read from [`roomi-fields/rtfm/.claude-plugin/plugin.json`](https://github.com/roomi-fields/rtfm/blob/main/.claude-plugin/plugin.json). Updates ship when that file is bumped. The marketplace entry is intentionally version-less to avoid drift between the two manifests.
-- **`notebooklm`** — version pinned in this repo's [`notebooklm/.claude-plugin/plugin.json`](./notebooklm/.claude-plugin/plugin.json). Bump it when [`@roomi-fields/notebooklm-mcp`](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) ships a new version.
+Both plugins have their `version` field in upstream `.claude-plugin/plugin.json`. The marketplace entry stays version-less to avoid drift.
+
+- **`rtfm`** — version pinned in [`roomi-fields/rtfm/.claude-plugin/plugin.json`](https://github.com/roomi-fields/rtfm/blob/main/.claude-plugin/plugin.json). Bump it via the RTFM release pipeline.
+- **`notebooklm`** — version pinned in [`roomi-fields/notebooklm-mcp/.claude-plugin/plugin.json`](https://github.com/roomi-fields/notebooklm-mcp/blob/main/.claude-plugin/plugin.json). Discipline is automated upstream via `npm run version:check` in CI.
+
+When either plugin ships a new version, users running auto-update or `/plugin marketplace update roomi-fields` pick it up automatically — no commit needed in this repo.
+
+---
+
+## Updating descriptions and keywords
+
+The `description`, `keywords`, and `homepage` fields in `marketplace.json` are surfaced in Claude Code's Discover tab *before* the plugin is cloned, so they need to live in the catalog. To keep them in sync with upstream:
+
+1. Pull the latest `description` and `keywords` from the upstream `plugin.json`
+2. Update the corresponding entry in `.claude-plugin/marketplace.json`
+3. Commit + push (no version bump needed for the marketplace itself)
+
+Or just leave them — they don't have to match upstream byte-for-byte; they only need to give Discover-tab users an accurate idea of what they're installing.
 
 ---
 
