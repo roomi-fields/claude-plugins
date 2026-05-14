@@ -78,11 +78,14 @@ See the [RTFM × NotebookLM integration guide](https://roomi-fields.github.io/rt
 ```
 claude-plugins/
 ├── .claude-plugin/marketplace.json   # the catalog (only file that matters)
+├── PLAYBOOK.md                       # howto for shipping a quality MCP (code, docs, SEO, growth)
 ├── README.md
 └── LICENSE
 ```
 
 That's the whole repo. No plugin code lives here — both `rtfm` and `notebooklm` are sourced from their own GitHub repos at install time. This keeps the aggregator dependency-free and ensures users always get the upstream manifest.
+
+> [`PLAYBOOK.md`](./PLAYBOOK.md) — the reusable playbook for building and launching every MCP under `roomi-fields`: server code quality, packaging, in-repo docs, web docs, communication, and growth. Read it before starting a new MCP.
 
 ---
 
