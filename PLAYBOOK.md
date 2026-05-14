@@ -21,6 +21,8 @@ Before writing a single feature, get the skeleton right:
 8. [ ] Listed in the `roomi-fields/claude-plugins` marketplace
 9. [ ] Submitted to the manual-action directories (see §6)
 
+Design the tool surface as a `namespace.action` **dot-notation tree** from the start (§1.8) — it's MCP best practice, registries score it, and renaming later forces a major version bump.
+
 Channels that **did not** move the needle (measured via GitHub Traffic): LinkedIn, X/Twitter. Do not over-invest there for a developer tool. The engine is **MCP directories + Google SEO**.
 
 ---
@@ -99,6 +101,22 @@ Every MCP repo runs, on every push + PR, across Node 18/20/22:
 
 The release workflow adds a **version-sync gate** (§2.4). If any of these is red, nothing ships.
 
+### 1.8 Tool contract: dot-notation names, annotations, output schema
+
+Three things make the tool surface "evaluable at a glance" — by agents and by registry scorers:
+
+- **Names are a `namespace.action` dot-notation tree** (`notebook.ask`, `source.add`, `session.list`), not a flat `snake_case` list. Keep namespaces balanced — avoid single-tool namespaces and avoid going past two levels.
+- **Every tool has `annotations`** — accurate `readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint` / `title`. From a central table, not scattered.
+- **Every tool has an `outputSchema`** — and the dispatch returns `structuredContent` matching it, not just text. If all handlers share a result envelope (`{success, data?, error?}`), it's one shared schema.
+
+> **Scar:** these were retrofitted in v2.0.0 to lift a registry quality score from 60 → 98. Doing them on day 1 is free; retrofitting is a major version bump.
+
+**Renaming tools compatibly** (legacy flat → dot-notation tree):
+
+- One **source of truth** for the mapping — a tiny `tool-names.ts` with `LEGACY_TO_CANONICAL` / `CANONICAL_TO_LEGACY` and *no heavy imports*, so both the server and the HTTP proxy can share it.
+- `tools/list` advertises **only** the canonical names. The dispatch layer normalises *any* accepted name (canonical or legacy) back to the internal name before routing — the switch and handlers don't change.
+- Legacy names keep working as **aliases** — existing scripts, IDE configs and batch jobs don't break. That backward-compatibility is what makes the major bump non-disruptive.
+
 ---
 
 ## 2. Packaging & distribution plumbing
@@ -168,6 +186,20 @@ Glama auto-discovers and rebuilds a Docker image using **its own** Dockerfile (D
 
 - Their builder is flaky — ECONNRESET while pulling the base image happens. Just retry from the admin UI.
 - **pnpm/npm gap:** an `overrides` block in `package.json` is npm-only. pnpm reads `pnpm.overrides`. If you pin a transitive dep for a security fix, mirror it under `pnpm.overrides` or the auto-built image stays vulnerable.
+
+### 2.7 Smithery (stdio servers — publish a bundle, by hand)
+
+Smithery is a high-traffic registry, worth being on. For a **stdio** server the publish flow is fiddly and effectively undocumented — what actually works:
+
+- **Publishing is CLI-only.** `smithery.ai/new` only accepts a hosted HTTPS URL or a GitHub repo. A stdio server ships as an MCPB bundle: `npx @smithery/cli mcp publish <bundle>.mcpb -n <namespace>/<name>`. The CLI needs **Node ≥ 20** (`globalThis.File`). Get the namespace from `smithery auth whoami` — don't assume it matches your GitHub org.
+- **The bundle manifest must declare a `user_config` block** or publish fails with the opaque `400 "No values to set"`. One optional field (e.g. a data dir mapped to an env var) is enough.
+- **Smithery never runs a stdio server**, so it never reads `tools/list` — the registry `tools` field stays `null` and the whole 40-point "Capability" score is zero. You must ship the full tool definitions *inside the bundle manifest*: `name`, `description`, `inputSchema`, `outputSchema`, `annotations` per tool.
+  > **Scar:** the MCPB manifest schema only allows `{name, description}` in `tools` (`additionalProperties: false`), so `npx @anthropic-ai/mcpb pack` strips everything else — but Smithery's own parser *requires* the full objects for scoring. Resolution: hand-zip the bundle (`zip -X b.mcpb manifest.json icon.png`), don't `mcpb pack`.
+- **Server metadata is separate from the bundle.** Description / homepage / icon do *not* come from the manifest — `PATCH /servers/{ns}%2F{name}` on `registry.smithery.ai` with a `Bearer` token from `smithery auth token --policy '{"namespaces":"<ns>"}'`.
+- **Don't trust the read endpoints to verify.** `registry.smithery.ai` GETs are heavily cached and lag minutes behind a successful write — they show empty `description`/`tools` long after the data is live. Verify on the server's score page.
+- **The score (100 total):** Metadata 35, Config UX 25, Capability 40. Capability is only reachable by shipping *real* schemas — add `outputSchema` + `annotations` to the actual server code (§1.8), don't fake them in the manifest. The last ~2 points ("Naming" — a "navigable tree") run on an opaque heuristic; dot-notation captures most of it, the remainder is a guess — **don't chase it with another rename**.
+
+> This corrects the earlier "hosted installers can't run local tools → ~0/40, won't-fix" note: the hosted *install button* indeed stays dead for a local/stateful server, but the *quality score* is fully reachable (60 → 98 in practice) by shipping the schemas in the bundle yourself.
 
 ---
 
@@ -273,7 +305,9 @@ Track the **verified** state per repo in `docs/DISTRIBUTION.md` (or `MCP_DIRECTO
 
 #### Hosted-install directories (Glama / Smithery) and local tools
 
-Glama's "Install Server" button and Smithery both want to **build and run** your server in their infra (Glama builds its own Dockerfile, Smithery hosts it). That only works for **stateless** servers. A tool that needs local files (`rtfm` indexes the user's project) or interactive auth (`notebooklm-mcp` needs a browser + Google login) cannot do anything useful in a hosted container — the capability score lands at ~0/40 and the install button stays dead. This is **won't-fix, not a bug**. The directory *page* and *score badge* still work and still carry SEO value, so a presence-only listing can be worth it — but never build a Dockerfile or chase a "release" to satisfy a hosted installer for a local tool.
+Glama's "Install Server" button and Smithery's hosted runner both want to **build and run** your server in their infra. That only works for **stateless** servers. A tool that needs local files (`rtfm` indexes the user's project) or interactive auth (`notebooklm-mcp` needs a browser + Google login) cannot do anything useful in a hosted container — the hosted *install button* stays dead. This part is **won't-fix, not a bug**: never build a Dockerfile or chase a hosted "release" to satisfy it for a local tool.
+
+But the *listing* and its *quality score* are a different thing, and they are worth it — they carry real SEO weight. For Smithery specifically, a stdio server still gets a full, high-scoring page if you publish the bundle correctly and ship the tool schemas inside it yourself (§2.7) — `notebooklm-mcp` went 60 → 98 that way. Presence + a good score badge ≠ a working hosted install; pursue the former, skip the latter.
 
 ### 6.2 Monitoring cadence
 
@@ -324,7 +358,13 @@ Every one of these shipped a bug or a bad release at least once:
 - ❌ Drafting a directory submission before verifying the channel accepts one — `gh api repos/X/pulls` → 404 means PRs are off, whatever CONTRIBUTING.md claims
 - ❌ `gh pr create` / `OWNER:BRANCH` shorthand when the fork name ≠ the parent name → resolves to the wrong fork (or another fork in your account), fails with a misleading permission error. Use the GraphQL `createPullRequest` mutation with explicit `headRepositoryId` / `repositoryId`
 - ❌ Letting the MCP Registry drift — it never auto-syncs from npm/PyPI; `rtfm` sat 5 versions behind for ~2 months. Re-publish on every notable release (§2.2)
-- ❌ Building a Dockerfile or chasing a Glama/Smithery "release" to make the hosted "Install" button work for a local or stateful server — it structurally can't (§6.1)
+- ❌ Building a Dockerfile or chasing a Glama/Smithery hosted-*install* "release" for a local or stateful server — it structurally can't work (§6.1). (The Smithery *score*, though, is reachable — §2.7.)
+- ❌ Faking `outputSchema` / `annotations` in a distribution manifest instead of adding them to the server code — the manifest then lies about what the server exposes (§1.8)
+- ❌ `mcpb pack` for a Smithery bundle that needs full per-tool schemas — it validates against the MCPB schema and strips everything past `{name, description}`. Hand-zip instead (§2.7)
+- ❌ Trusting `registry.smithery.ai` GET endpoints to verify a publish — heavily cached, minutes-stale. Check the score page (§2.7)
+- ❌ Chasing the opaque tail of a quality score (e.g. Smithery "Naming") with another tool rename right after a major release — churn for ~2 points on a heuristic you can't see. Stop at "excellent"
+- ❌ Treating a green `npm audit` as permanent — the advisory DB updates; a clean audit goes red with zero code change. Re-pin transitive deps with targeted `overrides` (bit us between 1.7.9 and 2.0.0: `fast-uri`, `hono`)
+- ❌ Assuming a GitHub token can open PRs anywhere — an enterprise/EMU token can comment on issues but is blocked from `CreatePullRequest` on external repos. There's no code workaround; open the PR from a personal account
 
 ---
 
