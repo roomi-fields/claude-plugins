@@ -257,11 +257,23 @@ The takeaway: spend effort on **discoverability** (registries, SEO, directory su
 
 ### 6.1 Directory submissions
 
-Most directories auto-index once you're on npm + the MCP Registry. Some need a manual action — track them in a `docs/MCP_DIRECTORIES.md` per repo, with tiers:
+Most directories auto-index once you're on npm/PyPI + the MCP Registry. Some claim to take manual submissions — but **verify the mechanism actually works before spending any effort on it.**
 
-- **Auto-indexed** — verify you appear, fix metadata if wrong.
-- **Manual, high value** — awesome-mcp-servers lists (GitHub PR), FindMCP, Cursor Directory, Cline Marketplace.
-- **Manual, low effort** — the long tail of web-form directories.
+> **Scar:** the March distribution plan for `rtfm` listed five "high-value manual" channels. A 2026-05-14 live audit found exactly **one** was actually actionable. mcp.so is a comment in a megathread issue, no triage, no SLA. Cline Marketplace had 500+ untriaged `[Server Submission]` issues. `wong2/awesome-mcp-servers` no longer takes PRs (redirects to `mcpservers.org/submit`). `appcypher/awesome-mcp-servers` has the PR feature **disabled** (`gh api repos/.../pulls` → 404) despite its CONTRIBUTING.md still saying "make an individual pull request". Only `punkpeye/awesome-mcp-servers` was a real PR channel.
+
+Tiers, honestly:
+
+- **Auto-indexed — this is the engine.** Glama, mcpservers.org, PulseMCP, LobeHub. Fed by your GitHub repo + the MCP Registry; they re-scrape on activity. This is where listings actually come from — verify you appear, keep the source metadata fresh.
+- **Manual, occasionally real.** `punkpeye/awesome-mcp-servers` (genuine PR review). Cursor Directory (no PR path — Supabase-backed, interactive GitHub/Google sign-in at `cursor.directory/plugins/new`, auto-detects the repo's `.mcp.json`). **Before drafting an entry, confirm the channel even accepts submissions:** `gh api repos/<owner>/<repo>/pulls` must not 404, and check actual PR/issue throughput — not the CONTRIBUTING.md, which lies.
+- **Dead — don't re-chase.** Issue-megathread channels (mcp.so), untriaged-backlog marketplaces (Cline), repos with PRs disabled (appcypher).
+
+The single highest-leverage action is keeping the **GitHub repo description + topics** accurate — every auto-indexer recopies it verbatim. A stale description (`rtfm` shipped "10 parsers" when it was 15) poisons every downstream directory at once; one `gh repo edit` fixes them all on the next re-scrape.
+
+Track the **verified** state per repo in `docs/DISTRIBUTION.md` (or `MCP_DIRECTORIES.md`) — status, not aspiration. Re-audit before acting; March's plan was 80% stale by May.
+
+#### Hosted-install directories (Glama / Smithery) and local tools
+
+Glama's "Install Server" button and Smithery both want to **build and run** your server in their infra (Glama builds its own Dockerfile, Smithery hosts it). That only works for **stateless** servers. A tool that needs local files (`rtfm` indexes the user's project) or interactive auth (`notebooklm-mcp` needs a browser + Google login) cannot do anything useful in a hosted container — the capability score lands at ~0/40 and the install button stays dead. This is **won't-fix, not a bug**. The directory *page* and *score badge* still work and still carry SEO value, so a presence-only listing can be worth it — but never build a Dockerfile or chase a "release" to satisfy a hosted installer for a local tool.
 
 ### 6.2 Monitoring cadence
 
@@ -309,6 +321,10 @@ Every one of these shipped a bug or a bad release at least once:
 - ❌ Dev junk (tmp scripts, debug PNGs, build tarballs) committed to the repo root
 - ❌ Documenting `/plugin update` — it doesn't exist
 - ❌ Over-investing in social posts for a developer tool
+- ❌ Drafting a directory submission before verifying the channel accepts one — `gh api repos/X/pulls` → 404 means PRs are off, whatever CONTRIBUTING.md claims
+- ❌ `gh pr create` / `OWNER:BRANCH` shorthand when the fork name ≠ the parent name → resolves to the wrong fork (or another fork in your account), fails with a misleading permission error. Use the GraphQL `createPullRequest` mutation with explicit `headRepositoryId` / `repositoryId`
+- ❌ Letting the MCP Registry drift — it never auto-syncs from npm/PyPI; `rtfm` sat 5 versions behind for ~2 months. Re-publish on every notable release (§2.2)
+- ❌ Building a Dockerfile or chasing a Glama/Smithery "release" to make the hosted "Install" button work for a local or stateful server — it structurally can't (§6.1)
 
 ---
 
