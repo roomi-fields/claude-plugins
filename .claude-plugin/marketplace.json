@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-marketplace.json",
   "name": "roomi-fields",
-  "description": "Open-source plugins by roomi-fields for Claude Code: RTFM (retrieval layer for any project) and NotebookLM (citation-backed Q&A).",
+  "description": "Open-source plugins by roomi-fields for Claude Code: RTFM (retrieval layer for any project), NotebookLM (citation-backed Q&A), and osc-bridge (MIDI & OSC bridge for synthesizers and DAWs).",
   "owner": {
     "name": "roomi-fields",
     "email": "claude@liance.art"
@@ -47,6 +47,30 @@
         "qa",
         "rag",
         "rtfm"
+      ]
+    },
+    {
+      "name": "osc-bridge",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/roomi-fields/osc-bridge.git"
+      },
+      "description": "Declarative OSC bridge for music hardware and software — 849 synthesizer drivers (MIDI/SysEx) plus DAW & live-coding targets (Ableton, Bitwig, Reaper, Sonic Pi, SuperCollider). A MIDI MCP and OSC MCP: discover the device catalogue, read a device's OSC surface, send OSC to synths and DAWs from Claude.",
+      "homepage": "https://roomi-fields.github.io/osc-bridge/",
+      "category": "music",
+      "keywords": [
+        "midi",
+        "osc",
+        "synthesizer",
+        "ableton",
+        "bitwig",
+        "reaper",
+        "sonic-pi",
+        "supercollider",
+        "daw",
+        "live-coding",
+        "hardware",
+        "music"
       ]
     }
   ]
