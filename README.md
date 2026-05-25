@@ -2,7 +2,7 @@
 
 # Claude Code plugins by roomi-fields
 
-**Two open-source plugins to extend Claude Code: RTFM (retrieval) + NotebookLM (citation-backed Q&A).**
+**Open-source plugins to extend Claude Code: RTFM (retrieval), NotebookLM (citation-backed Q&A), osc-bridge (MIDI/OSC for synths & DAWs), electra-one (Electra One widget development).**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-8A2BE2)](https://claude.ai/claude-code)
@@ -18,9 +18,11 @@
 /plugin marketplace add roomi-fields/claude-plugins
 /plugin install rtfm@roomi-fields
 /plugin install notebooklm@roomi-fields
+/plugin install osc-bridge@roomi-fields
+/plugin install electra-one@roomi-fields
 ```
 
-That's it. Both MCP servers register automatically when each plugin is enabled.
+That's it. Each MCP server registers automatically when its plugin is enabled.
 
 ---
 
