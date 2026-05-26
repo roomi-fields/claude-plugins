@@ -80,7 +80,7 @@
         "url": "https://github.com/roomi-fields/electra-one-mcp.git"
       },
       "description": "Develop Electra One MK2/Mini widgets and presets from Claude Code. Push to device over USB SysEx, capture Lua logs, search the indexed official documentation, validate preset JSON. Ships with an always-on skill that primes Claude with the verified Lua API and the device-side gotchas confirmed empirically (graphics.print signature, integer-coord requirement, 1-pot-per-custom-tile firmware limit, IIFE-free bundling, slotId 0-indexed, etc.).",
-      "homepage": "https://github.com/roomi-fields/electra-one-mcp",
+      "homepage": "https://roomi-fields.github.io/electra-one-mcp/",
       "category": "music",
       "keywords": [
         "electra-one",
