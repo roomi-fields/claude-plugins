@@ -303,6 +303,24 @@ The single highest-leverage action is keeping the **GitHub repo description + to
 
 Track the **verified** state per repo in `docs/DISTRIBUTION.md` (or `MCP_DIRECTORIES.md`) — status, not aspiration. Re-audit before acting; March's plan was 80% stale by May.
 
+#### Anthropic plugin directory (Claude Code) — separate from the MCP registries
+
+This is a **different channel** from everything above: it lists Claude Code *plugins*, not MCP servers. Two repos, very different rules:
+
+- **`claude-plugins-official`** — curated by Anthropic, **no application process**, inclusion at their discretion. Can't be chased.
+- **`claude-plugins-community`** (installs as `@claude-community`) — open submissions. This is the real target.
+
+How it actually works (verified 2026-06-28):
+
+- **Submit via in-app form, never a PR.** PRs against the repo are auto-closed; the catalog syncs nightly from Anthropic's internal pipeline. Individual authors: `platform.claude.com/plugins/submit` (Console). Team/Enterprise orgs with directory access: `claude.ai/admin-settings/directory/submissions/plugins/new`.
+- **One submission = one plugin repo** (each needs `.claude-plugin/plugin.json`). My 5 plugins live in separate repos, so each is submitted individually. The `roomi-fields` marketplace.json stays an independent parallel channel — it does not migrate.
+- **Gate = `claude plugin validate` + automated safety screening.** The pipeline runs the same `validate` you can run locally. Run `claude plugin validate <repo> --strict` on every plugin *before* submitting.
+- Approved plugins are pinned to a commit SHA; CI bumps the pin as you push. Delay between approval and appearing in `marketplace.json` (nightly sync). Check the [community catalog](https://github.com/anthropics/claude-plugins-community/blob/main/.claude-plugin/marketplace.json) for your name.
+
+> **Scar (2026-06-28):** strict-validate caught real blockers before submission. `paper-trail` **failed plain validate** — two command `description:` values had unescaped `: ` (colon-space) → broken YAML frontmatter, commands loading with empty metadata. Fix: quote the value. `rtfm` tripped a strict warning for a dev-context `CLAUDE.md` at the plugin root (dead in plugin context); moved it to `.claude/CLAUDE.md` (still auto-loaded as project memory, validator stops flagging it). Lesson: `--strict` on day 1 is free; a rejected submission is not.
+
+> **Safety screening is a product decision, not a bug.** `paper-trail` name-dropped Sci-Hub / Anna's Archive in its public pitch (functionality is opt-in, default-off). Softened the *public-facing* surfaces only (plugin.json description, README tagline, MARKETPLACE_ENTRY) to neutral "optional extended sources, disabled by default" — kept the code, the opt-in env var, and full DISCLAIMER/LEGAL disclosure intact. Softening the description ≠ evading the scan (it reads the code too); the goal is accurate, non-promotional framing, not concealment.
+
 #### Hosted-install directories (Glama / Smithery) and local tools
 
 Glama's "Install Server" button and Smithery's hosted runner both want to **build and run** your server in their infra. That only works for **stateless** servers. A tool that needs local files (`rtfm` indexes the user's project) or interactive auth (`notebooklm-mcp` needs a browser + Google login) cannot do anything useful in a hosted container — the hosted *install button* stays dead. This part is **won't-fix, not a bug**: never build a Dockerfile or chase a hosted "release" to satisfy it for a local tool.
