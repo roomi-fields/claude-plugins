@@ -51,6 +51,25 @@
       ]
     },
     {
+      "name": "notebooklm-skill",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/roomi-fields/notebooklm-skill.git"
+      },
+      "description": "Skill-only companion to the notebooklm plugin: teaches Claude how to query Google NotebookLM well — citation formats, the daily-quota-aware batch-to-cache pattern, Studio generation, and transport selection. Requires the engine (install the notebooklm plugin, which already bundles this skill, or run the @roomi-fields/notebooklm-mcp server). Install this one only if you want the skill without the MCP server.",
+      "homepage": "https://github.com/roomi-fields/notebooklm-skill",
+      "category": "research",
+      "keywords": [
+        "notebooklm",
+        "skill",
+        "citations",
+        "research",
+        "gemini",
+        "qa",
+        "rag"
+      ]
+    },
+    {
       "name": "osc-bridge",
       "source": {
         "source": "url",
