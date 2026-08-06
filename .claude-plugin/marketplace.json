@@ -94,6 +94,28 @@
       ]
     },
     {
+      "name": "osc-bridge-skill",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/roomi-fields/osc-bridge-skill.git"
+      },
+      "description": "Skill-only companion to the osc-bridge plugin: teaches Claude to drive music gear well — finding the right driver among 849 synths, the OSC-to-CC/NRPN/SysEx mapping, the two-process architecture (MCP server plus the running bridge), per-DAW host setup (Ableton, Bitwig, Reaper) and live-coding targets, plus the failure modes that are silent by design. Requires the osc-bridge engine and a clone of its device catalogue.",
+      "homepage": "https://github.com/roomi-fields/osc-bridge-skill",
+      "category": "music",
+      "keywords": [
+        "osc",
+        "midi",
+        "sysex",
+        "synthesizer",
+        "ableton",
+        "bitwig",
+        "reaper",
+        "live-coding",
+        "music",
+        "skill"
+      ]
+    },
+    {
       "name": "electra-one",
       "source": {
         "source": "url",
