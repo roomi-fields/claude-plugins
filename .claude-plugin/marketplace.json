@@ -143,7 +143,7 @@
         "source": "url",
         "url": "https://github.com/roomi-fields/paper-trail.git"
       },
-      "description": "Anti-hallucination plugin for academic research. Creates state-of-the-art reviews guaranteed without fabrication, audits existing SOTAs/articles (purge or warnings), with a strict validation engine (8-state FSM + 8-source PDF acquisition cascade (up to 11 with opt-in extended sources) + page-1 anti-homonymy validation + 19 registry invariants). Generic multi-domain workflow with Obsidian adapter by default. Optional extended acquisition sources are disabled by default (explicit opt-in only; see DISCLAIMER).",
+      "description": "Anti-hallucination plugin for academic research. Creates state-of-the-art reviews guaranteed without fabrication, audits existing SOTAs/articles (purge or warnings), with a strict validation engine (8-state FSM + 10-source PDF acquisition cascade (up to 17 with browser routes and opt-in extended sources) + page-1 anti-homonymy validation + 19 registry invariants). Generic multi-domain workflow with Obsidian adapter by default. Optional extended acquisition sources are disabled by default (explicit opt-in only; see DISCLAIMER).",
       "homepage": "https://github.com/roomi-fields/paper-trail",
       "category": "research",
       "keywords": [
