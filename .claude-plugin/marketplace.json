@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-marketplace.json",
   "name": "roomi-fields",
-  "description": "Open-source plugins by roomi-fields for Claude Code: RTFM (retrieval layer), NotebookLM (citation-backed Q&A), osc-bridge (MIDI & OSC bridge for synths/DAWs), electra-one (custom widgets & presets for the Electra One MIDI controller), and paper-trail (anti-hallucination academic research workflow).",
+  "description": "Open-source plugins by roomi-fields for Claude Code: RTFM (retrieval layer), NotebookLM (citation-backed Q&A), osc-bridge (MIDI & OSC bridge for synths/DAWs), electra-one (custom widgets & presets for the Electra One MIDI controller),, paper-trail (anti-hallucination academic research workflow) and grillhouse (the board of a Roomi's Grillhouse project).",
   "owner": {
     "name": "roomi-fields",
     "email": "claude@liance.art"
@@ -156,6 +156,26 @@
         "sota",
         "literature-review",
         "obsidian"
+      ]
+    },
+    {
+      "name": "grillhouse",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/roomi-fields/roomis-grillhouse.git",
+        "path": "mods/grillhouse"
+      },
+      "description": "The board of a Roomi's Grillhouse project, beside the transcript: the project, the chantier in progress and its tree of tickets, the agents with the tickets they run and wait for, each with its duration and tokens; a ticket's card on hover or by keyboard.",
+      "homepage": "https://github.com/roomi-fields/roomis-grillhouse",
+      "category": "productivity",
+      "keywords": [
+        "grillhouse",
+        "tickets",
+        "beads",
+        "agents",
+        "board",
+        "pane",
+        "mod"
       ]
     }
   ]
