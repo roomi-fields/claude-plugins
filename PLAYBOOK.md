@@ -668,47 +668,25 @@ Every one of these shipped a bug or a bad release at least once:
 
 ---
 
-## 10. Appendix — applying §8 to `osc-bridge` (audited 2026-10-23)
+## 10. Appendix — applying §8 to `osc-bridge` (audited 2026-10-23, corrected the same day)
 
-The chapter above was written from `notebooklm-mcp`. Here is what a live audit of
-`osc-bridge` / SynthHub found, as a worked example of reading §8 against a real project.
-**Re-verify before acting** — this snapshot ages.
+The chapter above was written from `notebooklm-mcp`. This appendix audited `osc-bridge` / SynthHub against it — and two of its three findings needed correcting once the owning session checked them. **That is the lesson worth keeping**: an audit of someone else's project states facts about a system you do not know; have its owner verify each one before acting, and re-verify their answer.
 
-**Already done, and done well** — do not redo:
+**Already done, and done well:** own subdomain (so `robots.txt` and `llms.txt` are actually reachable), `Content-Signal` plus the answer-engine agents named one by one, a ~1 000-URL sitemap, a blog. And community scaffolding most projects lack: issue templates (including a _new device request_), three PR templates, a CLA workflow. For a community project that is the part that converts a visitor into a contributor.
 
-- Own subdomain (`synthhub.roomi-fields.com`), so `robots.txt` and `llms.txt` are actually
-  reachable (§8.1).
-- `robots.txt` carries `Content-Signal` and names the answer-engine agents one by one.
-- A substantial `llms.txt`: what it is, who publishes it, install, registry ids, the hosted
-  endpoint, the trust model.
-- A sitemap with ~1 000 URLs, blog included; a blog already exists.
-- Community scaffolding most projects lack: issue templates (including a _new device
-  request_), three PR templates, a CLA workflow. For a community project this is the part
-  that converts a visitor into a contributor — it is ahead of `notebooklm-mcp` here.
+**Finding 1 — the same count stated three ways. Correct, and fixed.** GitHub said 849 devices, the package 963, the README and `llms.txt` 964. Every auto-indexer recopies the GitHub description verbatim (§6.1), so the oldest and lowest number was the one circulating. Fixed with a counter derived from the driver files that rewrites the number in every phrase across nine files, with a `--check` in CI that also verifies the GitHub description. The site itself was already computing the figure at build time — worth checking before assuming prose is hand-written everywhere.
 
-**Three gaps, in order of cost:**
+**Finding 2 — `/blog` redirected to `http://…:8080/blog/` and timed out. Correct, and fixed — but my diagnosis was wrong.** I attributed it to the site generator's `url` setting and assumed Docusaurus; it is **MkDocs**, and the culprit was **nginx on the VPS** (`absolute_redirect` rebuilding the Location header from the upstream's host and port). Now a clean `301 → /blog/` over HTTPS.
 
-1. **The same count is stated three different ways** — GitHub description says **849**
-   devices, the npm description says **963**, the README and `llms.txt` say **964**. Every
-   auto-indexer recopies the GitHub description verbatim (§6.1), so the lowest and oldest
-   number is the one most directories are showing. There is no facts guard in the repo.
-   → Derive the count from the driver files and sync it everywhere (§8.5). One number, one
-   source, checked in CI.
-2. **`/blog` without a trailing slash 301s to `http://synthhub.roomi-fields.com:8080/blog/`**
-   — port 8080, downgraded to http, and it times out. A crawler or a human following that
-   link gets nothing. The site uses `trailingSlash: true`, so the no-slash form is the one
-   outsiders will type. → Fix the `url` in the Docusaurus config (something is injecting the
-   dev port), then re-verify both forms.
-3. **One JSON-LD block, site-wide** — the project is described, the individual pages are not.
-   With ~1 000 pages, most of them per-device, this is the single largest untapped surface in
-   the whole `roomi-fields` estate: each device page could carry its own node naming the
-   device, its vendor and its parameters. → §8.3, plus the build-time guard.
+> **Scar:** a redirect that leaks an internal port is an infrastructure symptom, not a site-config one. `absolute_redirect off;` (or a correct `proxy_set_header Host`) is the fix. Check which layer emits the Location header before editing a generator config — and check which generator it is.
 
-**Where this project is not like `notebooklm-mcp`:** the goal is a _community_, not just
-installs. §8.4's research step should therefore mine what synth owners actually ask
-("minilab 3 sysex", "control ableton from claude", "bitwig osc api") **and** what would make
-someone contribute a driver — the contribution path is the product here, so it deserves the
-same keyword treatment as the features.
+**Finding 3 — "one site-wide JSON-LD block, pages say nothing about themselves". WRONG, retracted.** Each device page already carried its own nodes. `/devices/korg/minilogue/` serves a single `@graph` holding `TechArticle` **and** `Product` + `Brand` for that device, alongside the site-wide `Organization` / `WebSite` / `SoftwareApplication`. The owning session improved it anyway (the page is now `about` the device, with its CC/NRPN/SysEx counts as `additionalProperty`).
+
+> **Scar — I counted tags, not nodes.** My check was `grep -c 'application/ld+json'`, which returned 1, and I read that as "site-wide only". A correct per-page implementation can ship **one** script tag whose `@graph` contains the per-page nodes — exactly what §8.3 recommends. Parse the JSON and list the `@type` values; never infer coverage from the number of script tags.
+
+**Still open:** the repo-root `glama.json` (§2.6). The owning session is right to route it to Romain rather than assume: Glama was deliberately rejected as a _host_ for that project, and claiming the listing is a separate question from hosting.
+
+**Where this project is not like `notebooklm-mcp`:** the goal is a _community_, not just installs. §8.4's research step should therefore mine what synth owners actually ask ("minilab 3 sysex", "control ableton from claude", "bitwig osc api") **and** what would make someone contribute a driver — the contribution path is the product here, so it deserves the same keyword treatment as the features.
 
 ---
 
