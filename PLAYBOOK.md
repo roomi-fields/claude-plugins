@@ -185,10 +185,39 @@ Rules:
 
 ### 2.6 Glama (and other auto-builders)
 
-Glama auto-discovers and rebuilds a Docker image using **its own** Dockerfile (Debian + Node 24 + `pnpm`), not yours.
+Glama auto-discovers and rebuilds a Docker image using **its own** Dockerfile (Debian + Node 24 + `pnpm`), not yours. Debugging a Glama failure by reading your own `Dockerfile` is a dead end.
 
-- Their builder is flaky — ECONNRESET while pulling the base image happens. Just retry from the admin UI.
+- Their builder is flaky — ECONNRESET or a timeout while pulling the base image happens, and shows as a build log of only three lines. Just retry.
 - **pnpm/npm gap:** an `overrides` block in `package.json` is npm-only. pnpm reads `pnpm.overrides`. If you pin a transitive dep for a security fix, mirror it under `pnpm.overrides` or the auto-built image stays vulnerable.
+
+#### Claim the listing: `glama.json` at the repo root
+
+Glama writes your directory page itself, and lets it age. Declaring the maintainer is what lets you take it over:
+
+```json
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["<github-username>"]
+}
+```
+
+Their schema takes **exactly that one field** — nothing else belongs in the file, and nothing about build or transport config can be declared to Glama this way.
+
+> **Not the same file as `.well-known/glama.json`.** That one proves ownership of a _remote connector's origin_ and carries a `glama_claim_…` token minted by a signed-in Glama account. It applies only if you host a remote server; a locally installed package has no origin to prove, and the token cannot be invented. Two files, two purposes — we described the wrong one first.
+
+#### The trap that blocks Auto-Release: an inferred Python version
+
+> **Scar, confirmed three times (2026-08-07, 2026-09-06, 2026-10-23).** Glama _infers_ a `pythonVersion` and sets it on projects with **zero** Python — the repo had not a single `.py` file, `requirements.txt` or `pyproject.toml`. Their image then downloads uv, installs that Python and links it, and the build dies on their own timeout. Clearing the field is what made the build pass. It had blocked Auto-Release for **thirteen releases**, from 24 August to 23 October: the directory page advertised 3.1.2 while the package shipped 4.3.0, on the page answer engines read.
+
+So: when a Glama listing is stuck several versions behind, check that field **first**. Their own banner says it plainly — _"Auto-Release won't publish anything until that's fixed"_ — meaning publication is automatic once a build succeeds. Keep their build green and you never touch the UI again; that is the whole automation.
+
+#### What cannot be driven from CI
+
+There is **no write API**. Re-verified 2026-10-23: the read API demands a key (401), no write endpoint exists (404), and every `/admin/*` path redirects to sign-up without a session. With session cookies in a curl config the admin pages do return 200 and are readable — the build spec of any past test is there verbatim, which is how you recover the four JSON fields the form hydrates with JavaScript and omits from the served HTML.
+
+But the write side is JavaScript all the way down: a faithful `POST` to the build form (every field reconstructed, `intent=build-and-release`) returned 200, no validation error, **and changed nothing**; the "Create Release" control is a bare `<button>` with no form and no reachable action. So the two gestures that matter — clearing a field, publishing a passing build — are the maintainer's, in a browser. Budget one manual pass per _breakage_, not per release.
+
+> Session cookies are bearer credentials: whoever holds one **is** that account until it expires. If you ever take them, keep them out of the transcript, store them `chmod 600`, delete the file when done, and have the owner sign out to invalidate the session. Never ask for them for a job that is two clicks in a browser.
 
 ### 2.7 Smithery (stdio servers — publish a bundle, by hand)
 
@@ -624,6 +653,9 @@ Every one of these shipped a bug or a bad release at least once:
 - ❌ Trusting `registry.smithery.ai` GET endpoints to verify a publish — heavily cached, minutes-stale. Check the score page (§2.7)
 - ❌ Chasing the opaque tail of a quality score (e.g. Smithery "Naming") with another tool rename right after a major release — churn for ~2 points on a heuristic you can't see. Stop at "excellent"
 - ❌ Treating a green `npm audit` as permanent — the advisory DB updates; a clean audit goes red with zero code change. Re-pin transitive deps with targeted `overrides` (bit us between 1.7.9 and 2.0.0: `fast-uri`, `hono`)
+- ❌ Debugging a Glama build failure by reading your own Dockerfile — they build with theirs (§2.6)
+- ❌ Leaving an inferred `pythonVersion` on a Node-only project at Glama — it installs a Python you do not use and times out the build, which silently blocks their Auto-Release (§2.6)
+- ❌ Asking for a maintainer's session cookies for a job that is two clicks in their browser (§2.6)
 - ❌ A docs site on a `github.io` subpath with a `robots.txt` or `llms.txt` in it — the files return 200 and are never requested (§8.1)
 - ❌ One site-wide JSON-LD block repeated on every page, so no page says what _it_ is about (§8.3)
 - ❌ Carrying JSON through YAML frontmatter into MDX — it arrives corrupted (§8.3)
