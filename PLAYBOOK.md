@@ -566,6 +566,35 @@ a missing git history. None of them failed loudly.
 So: whenever the output can be _missing_ rather than _wrong_, add a guard that asserts its
 presence — and **break the guard once on purpose** before you trust it.
 
+### 8.8 Propagation — a release lands in six places, and you control four
+
+Publishing is automated per project; **noticing that one channel did not follow is not**.
+`scripts/check-propagation.mjs` in this repo reports, per project, the version visible on:
+
+| Channel                        | Ours?  | If it lags                                                    |
+| ------------------------------ | ------ | ------------------------------------------------------------- |
+| npm / PyPI                     | yes    | the release job failed — fix now                              |
+| Official MCP Registry          | yes    | the registry step never ran; it **never** auto-syncs from npm |
+| GitHub release                 | yes    | the tag exists but the release did not publish                |
+| Plugin manifest version pin    | yes    | updates silently do not reach users (§2.3)                    |
+| MCP Toplist / Glama / PulseMCP | **no** | they re-scrape on their own schedule — wait, don't chase      |
+
+Run it after a release, or on a schedule. Three design rules learned by getting each of them
+wrong on the first run — a check that cries wolf is a check nobody reads:
+
+- **A release tagged minutes ago is not drift.** Inside a 45-minute grace window the script
+  says "still catching up". Our first run flagged a publish that was literally in progress.
+- **A manifest that launches a bundled binary has nothing to pin.** Only `npx` / `uvx` /
+  `pipx` manifests are subject to the cache trap; flagging the others is a false alarm.
+- **A third-party directory being behind is reported, never failed on.** `--strict` exits
+  non-zero only for channels we control.
+
+> **Scar — the checker's own bug.** The first version reported "no answer from MCP Registry"
+> for all three projects and read a two-year-old version off a directory page. Both were
+> mine: the registry rejects a percent-encoded slash in its `search` parameter, and the
+> directory's version list is not ordered the way it looks. A monitoring script states facts
+> about other systems; verify its output by hand before believing a single one of them.
+
 ---
 
 ## 9. Anti-patterns — the short list
