@@ -406,6 +406,27 @@ the one before it.
 3. **Know what each page is about** (§8.3 — structured data)
 4. **Find a page that answers the question someone actually typed** (§8.4 — content)
 
+### 8.0 Measure it — Search Console is already readable on this machine
+
+Everything in this chapter is a hypothesis until a search engine reports back. It can:
+a read-only service account exists and covers every `roomi-fields` / `liance` property.
+
+- key: `~/.config/gsc/gen-lang-client-0516795782.json` (mode 600) — a credential: never in a
+  repository, never pasted into a message. Its filename is Google's, not a descriptive one,
+  which is how its existence went unnoticed for a week.
+- reader, no dependencies: `/home/romi/.local/share/mcp-competitor-tracker/gsc.mjs`
+  — `node gsc.mjs sites`, then
+  `GSC_SITE=sc-domain:<domain> node gsc.mjs query --by query|page|date [--contains <text>] [--days 28]`.
+  It also exports `performance({site, contains, days, by, limit})`.
+- two traps: the API applies the row limit **before** its own click-descending order, so a
+  small `--limit` on a zero-click site returns arbitrary rows (ask for plenty, rank locally);
+  and the data lags ~2 days, so a window ending today reads as a collapse.
+
+Read the **average position on the query that has volume**, not the impression count.
+`notebooklm-mcp`, four months after shipping §8 in full: 187 impressions, **0 clicks**, and
+its one query with volume (`notebooklm mcp`, 62 impressions) sitting at **position 93**.
+Being indexed is not being found, and nothing else in this chapter tells you that.
+
 ### 8.1 The domain — the mistake that silently cancels the rest
 
 > **Scar (2026-10-18):** `notebooklm-mcp` shipped a careful `robots.txt` and a careful
