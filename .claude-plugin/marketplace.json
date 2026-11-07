@@ -161,9 +161,8 @@
     {
       "name": "grillhouse",
       "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/roomi-fields/roomis-grillhouse.git",
-        "path": "mods/grillhouse"
+        "source": "npm",
+        "package": "@roomi-fields/grillhouse"
       },
       "description": "The board of a Roomi's Grillhouse project, beside the transcript: the project, the chantier in progress and its tree of tickets, the agents with the tickets they run and wait for, each with its duration and tokens; a ticket's card on hover or by keyboard.",
       "homepage": "https://github.com/roomi-fields/roomis-grillhouse",
