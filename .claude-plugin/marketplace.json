@@ -33,10 +33,10 @@
       "name": "notebooklm",
       "source": {
         "source": "url",
-        "url": "https://github.com/roomi-fields/notebooklm-mcp.git"
+        "url": "https://github.com/roomi-fields/gemini-notebook-mcp.git"
       },
       "description": "Automate Google NotebookLM at scale. Citation-backed Q&A, full Studio generation (audio, video, infographic, report, presentation, data table), multi-account rotation with auto-reauth, and batch_to_vault for offline RTFM-ingestable answer caching. Ships a bundled notebooklm skill that primes Claude with citation formats, the daily-quota-aware batch pattern, and transport selection.",
-      "homepage": "https://github.com/roomi-fields/notebooklm-mcp",
+      "homepage": "https://github.com/roomi-fields/gemini-notebook-mcp",
       "category": "research",
       "keywords": [
         "notebooklm",

@@ -30,7 +30,7 @@ const STRICT = process.argv.includes("--strict");
 const PROJECTS = [
   {
     name: "notebooklm-mcp",
-    repo: "roomi-fields/notebooklm-mcp",
+    repo: "roomi-fields/gemini-notebook-mcp",
     registryName: "io.github.roomi-fields/notebooklm-mcp",
     pkg: { type: "npm", id: "@roomi-fields/notebooklm-mcp" },
   },

@@ -45,7 +45,7 @@ That's it. Each MCP server registers automatically when its plugin is enabled.
 | **What** | Citation-backed Q&A from your NotebookLM notebooks, plus full Studio generation (audio, video, infographic, report, presentation, data table) |
 | **Why** | Zero hallucinations from your sources. Multi-account rotation with auto-reauth for batch workloads |
 | **Tools** | Q&A with 5 citation formats, source management, notebook library, content download |
-| **Source** | Pulled from [`roomi-fields/notebooklm-mcp`](https://github.com/roomi-fields/notebooklm-mcp) — `mcpServers` declared in upstream `.claude-plugin/plugin.json` |
+| **Source** | Pulled from [`roomi-fields/gemini-notebook-mcp`](https://github.com/roomi-fields/gemini-notebook-mcp) — `mcpServers` declared in upstream `.claude-plugin/plugin.json` |
 | **Prerequisite** | Node.js ≥ 18 (the upstream manifest runs `npx -y @roomi-fields/notebooklm-mcp` — auto-download on first use) |
 
 ### `osc-bridge` — MIDI & OSC bridge for synths and DAWs
@@ -116,7 +116,7 @@ That's the whole repo. No plugin code lives here — every plugin is sourced fro
 Each plugin pins its `version` in its upstream `.claude-plugin/plugin.json`. The marketplace entry stays version-less to avoid drift.
 
 - **`rtfm`** — version pinned in [`roomi-fields/rtfm/.claude-plugin/plugin.json`](https://github.com/roomi-fields/rtfm/blob/main/.claude-plugin/plugin.json). Bump it via the RTFM release pipeline.
-- **`notebooklm`** — version pinned in [`roomi-fields/notebooklm-mcp/.claude-plugin/plugin.json`](https://github.com/roomi-fields/notebooklm-mcp/blob/main/.claude-plugin/plugin.json). Discipline is automated upstream via `npm run version:check` in CI.
+- **`notebooklm`** — version pinned in [`roomi-fields/gemini-notebook-mcp/.claude-plugin/plugin.json`](https://github.com/roomi-fields/gemini-notebook-mcp/blob/main/.claude-plugin/plugin.json). Discipline is automated upstream via `npm run version:check` in CI.
 - **`osc-bridge`** — version pinned in [`roomi-fields/osc-bridge/.claude-plugin/plugin.json`](https://github.com/roomi-fields/osc-bridge/blob/main/.claude-plugin/plugin.json). Bumped on each tagged release.
 - **`electra-one`** — version pinned in [`roomi-fields/electra-one-mcp/.claude-plugin/plugin.json`](https://github.com/roomi-fields/electra-one-mcp/blob/main/.claude-plugin/plugin.json). Bumped on each tagged release.
 

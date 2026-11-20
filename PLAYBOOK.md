@@ -1,7 +1,7 @@
 # MCP Project Playbook
 
 > The reusable howto for shipping a high-quality, discoverable MCP server — server code, packaging, in-repo docs, web docs, communication, and growth.
-> Distilled from building [`notebooklm-mcp`](https://github.com/roomi-fields/notebooklm-mcp) and [`rtfm`](https://github.com/roomi-fields/rtfm). Apply it to every new MCP under `roomi-fields`.
+> Distilled from building [`notebooklm-mcp`](https://github.com/roomi-fields/gemini-notebook-mcp) and [`rtfm`](https://github.com/roomi-fields/rtfm). Apply it to every new MCP under `roomi-fields`.
 
 This document is opinionated on purpose. Each rule exists because skipping it cost a release or a bug. Where a rule has a scar, the scar is named.
 
